@@ -6,25 +6,24 @@ def get_upcoming_birthdays(users):
 
     for user in users:
         birthday = datetime.strptime(user["birthday"], "%Y.%m.%d").date()
-
+        birthday = birthday.replace(year=today.year)
+        
         if birthday < today:
             birthday = birthday.replace(year=today.year + 1)
-        else:
-            birthday = birthday.replace(year=today.year)
-
-        if today <= birthday <= today + timedelta(days=7):
+        
+        days_until_birthday = (birthday - today).days
+        
+        if days_until_birthday <= 7:
+            if birthday.weekday() == 5: 
+                birthday += timedelta(days=2)  
+            elif birthday.weekday() == 6:  
+                birthday += timedelta(days=1) 
             
-            if birthday.weekday() == 5:  
-                birthday += timedelta(days=2) 
-            elif birthday.weekday() == 6: 
-                birthday += timedelta(days=1)  
-
-           
             upcoming_birthdays.append({
                 "name": user["name"],
                 "congratulation_date": birthday.strftime("%Y.%m.%d")
             })
-
+    
     return upcoming_birthdays
 
 
